@@ -138,5 +138,6 @@ trainer = Trainer(
 
 trainer.train()
 
-trainer.save_model(model_output_dir + "/final")
+trainer.peft_config = PeftConfig.from_pretrained(adapter_path)
+base_model_name = peft_config.base_model_name_or_path(model_output_dir + "/final")
 tokenizer.save_pretrained(model_output_dir + "/tokenizer")

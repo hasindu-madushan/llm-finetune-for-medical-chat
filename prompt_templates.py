@@ -6,4 +6,4 @@ Assume you are an excellent doctor. Using your knowledge, answer the question gi
 
 # Answer: """
 
-domain_bound_qna_prompt_template = prompt_template.strip()
+domain_bound_qna_prompt_template = domain_bound_qna_prompt_template.strip()

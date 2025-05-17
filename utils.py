@@ -1,6 +1,14 @@
 import numpy as np
 from datasets import load_dataset, Dataset, DatasetDict
 
+def tokenize_pretrain_dataset(tokenizer, data_df, max_len):
+    dataset = Dataset.from_pandas(data_df)
+    def tokenize(example):
+        text = f"{example['title']}\n{example['abstract']}{tokenizer.eos_token}"
+        return tokenizer(text, truncation=True, padding="max_length", max_length=max_len, return_attention_mask=True)
+    dataset = dataset.map(tokenize, batched=False)
+    return dataset
+
 
 def tokenize_dataset_for_qna(tokenizer, data_df, prompt_template, max_len):
     dataset = Dataset.from_pandas(data_df)
@@ -15,7 +23,7 @@ def tokenize_dataset_for_domain_bound_qna(tokenizer, data_df, prompt_template, m
 
 
 def tokenize_for_domain_bound_qna(example, tokenizer, prompt_template, max_len):
-    example["answer"] = f"<{example['class']}>{example['answer']}"
+    # example["answer"] = f"<{example['class']}>{example['answer']}"
     return tokenize_for_qna(example, tokenizer, prompt_template, max_len)
     
 

@@ -32,14 +32,15 @@ $ pip install -r requirements.txt
 ```
 $ streamlit run app.py
 ```
-![App](images/app_screenshot_1.png)
-
 
 2. Navigate to localhost:8501 in the browser
+![App](images/app_screenshot_1.png)
+Figure 1: Q and A app
 
 ---
 ## Final model comparison
 ![Final model comparison result](images/model_comparison.png)
+Table 1: Model comparison
 
 ---
 ## Datasets used

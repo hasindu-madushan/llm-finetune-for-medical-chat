@@ -2,6 +2,10 @@ import evaluate  # Hugging Face's evaluate library
 import numpy as np
 import torch
 from bert_score import BERTScorer, score as bert_score
+from rouge_score import rouge_scorer
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+from transformers import AutoTokenizer
+from typing import Dict
 
 
 
@@ -9,8 +13,9 @@ from bert_score import BERTScorer, score as bert_score
 bleu_metric = evaluate.load("bleu")
 rouge_metric = evaluate.load("rouge")
 
-def compute_metrics_for_pretrain(eval_preds, tokenizer):
-    """ Calculate bleu and rouge scores """
+
+def compute_metrics_for_pretrain(eval_preds: torch.Tensor, tokenizer: AutoTokenizer) -> Dict:
+    """ Calculate bleu and rouge scores for **logits** """
     with torch.no_grad():
         logits, labels = eval_preds
         
@@ -66,8 +71,8 @@ bert_scorer = BERTScorer(
 )
 
 
-def compute_metrics_for_qna(eval_preds, tokenizer):
-    """ Metric computation for qna finetune """
+def compute_metrics_for_qna(eval_preds: torch.Tensor, tokenizer: AutoTokenizer) -> Dict:
+    """ Metric computation for qna finetune for **logits** """
     with torch.no_grad():
         logits, labels = eval_preds
         
@@ -149,3 +154,29 @@ def compute_metrics_for_qna(eval_preds, tokenizer):
         
         torch.cuda.empty_cache()
         return metrics
+
+
+def calculate_metrics_for_qna_str(predicted_str, label_str):
+    """ Calculate BERTScore, BLEU, and ROUGE scores for a given target and predicted **string**. """
+    # BLEU Score (with smoothing)
+    reference = [label_str.split()]
+    hypothesis = predicted_str.split()
+    bleu = sentence_bleu(reference, hypothesis, smoothing_function=SmoothingFunction().method1)
+
+    # ROUGE Score
+    rouge = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
+    rouge_scores = rouge.score(label_str, predicted_str)
+
+    # BERTScore
+    P, R, F1 = bert_score([predicted_str], [label_str], lang="en", rescale_with_baseline=True)
+    
+    return {
+        "bleu": bleu,
+        "rouge1": rouge_scores['rouge1'].fmeasure,
+        "rouge2": rouge_scores['rouge2'].fmeasure,
+        "rougeL": rouge_scores['rougeL'].fmeasure,
+        "bertscore_precision": P[0].item(),
+        "bertscore_recall": R[0].item(),
+        "bertscore_f1": F1[0].item()
+    }
+        

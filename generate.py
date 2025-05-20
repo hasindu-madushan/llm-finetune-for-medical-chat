@@ -5,7 +5,8 @@ import torch
 import threading
 
 
-def generate(model, tokenizer, prompt: str, max_new_tokens=128, max_len=512):
+def generate(model: AutoModelForCausalLM, tokenizer: AutoTokenizer, prompt: str, max_new_tokens: int=128, max_len: int=512) -> str:
+    """ Generate the out of the model for given text prompt """
     sample = tokenizer(prompt, truncation=True, padding=False, max_length=max_len, return_attention_mask=True)
     input_ids = torch.tensor([sample["input_ids"]]).to(model.device)
     attention_mask = torch.tensor([sample["attention_mask"]]).to(model.device)
@@ -23,16 +24,21 @@ def generate(model, tokenizer, prompt: str, max_new_tokens=128, max_len=512):
 
 
 def stream_generate(
-    model,
-    tokenizer,
+    model: AutoModelForCausalLM,
+    tokenizer: AutoTokenizer,
     prompt: str,
     do_sample: bool,
     temperature: float = 1.0,
     top_k: int = 50,
     top_p: float = 1.0,
     max_new_tokens: int = 256,
-    skip_special_tokens=True
+    skip_special_tokens: bool = True
 ):
+    """ Generate the output of the model as a text stream for given text prompt 
+    
+    Args:
+        do_sample: to enable the sampling for the generation
+    """
     device = model.device
     # Tokenize the input
     inputs = tokenizer(prompt, return_tensors="pt").to(device)

@@ -1,7 +1,11 @@
 import numpy as np
+import pandas as pd
 from datasets import load_dataset, Dataset, DatasetDict
+from transformers import AutoTokenizer
 
-def tokenize_pretrain_dataset(tokenizer, data_df, max_len):
+
+def tokenize_pretrain_dataset(tokenizer: AutoTokenizer, data_df: pd.DataFrame, max_len: int) -> Dataset:
+    """ Tokenize the data for pretrain """
     dataset = Dataset.from_pandas(data_df)
     def tokenize(example):
         text = f"{example['title']}\n{example['abstract']}{tokenizer.eos_token}"
@@ -10,20 +14,23 @@ def tokenize_pretrain_dataset(tokenizer, data_df, max_len):
     return dataset
 
 
-def tokenize_dataset_for_qna(tokenizer, data_df, prompt_template, max_len):
+def tokenize_dataset_for_qna(tokenizer: AutoTokenizer, data_df: : pd.DataFrame, prompt_template: str, max_len: int) -> Dataset:
+    """ Tokenize the data set using the given prompt template """
     dataset = Dataset.from_pandas(data_df)
     dataset = dataset.map(lambda sample: tokenize_for_qna(sample, tokenizer, prompt_template, max_len), batched=False)
     return dataset
 
 
-def tokenize_dataset_for_domain_bound_qna(tokenizer, data_df, prompt_template, max_len):
+def tokenize_dataset_for_domain_bound_qna(tokenizer: AutoTokenizer, data_df: : pd.DataFrame, prompt_template: str, max_len: int) -> Dataset:
+    """ Tokenize for out-of-scope netagive samples. A special class token will be added at the front """
     dataset = Dataset.from_pandas(data_df)
     dataset = dataset.map(lambda sample: tokenize_for_domain_bound_qna(sample, tokenizer, prompt_template, max_len), batched=False)
     return dataset
 
 
 def tokenize_for_domain_bound_qna(example, tokenizer, prompt_template, max_len):
-    # example["answer"] = f"<{example['class']}>{example['answer']}"
+    # add class token in propmpt of the answer
+    example["answer"] = f"<{example['class']}>{example['answer']}"
     return tokenize_for_qna(example, tokenizer, prompt_template, max_len)
     
 

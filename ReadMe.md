@@ -1,139 +1,48 @@
-# Pretrain attempt 1
+# The Med Q & A Finetune
 
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 570.133.07             Driver Version: 570.133.07     CUDA Version: 12.8     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA A100 80GB PCIe          Off |   00000001:00:00.0 Off |                    0 |
-| N/A   70C    P0            283W /  300W |   13498MiB /  81920MiB |     98%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-                                                                                         
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    0   N/A  N/A            4973      C   ...min/hasindu/myenv/bin/python3      13486MiB |
-+-----------------------------------------------------------------------------------------+
+## Introduction
+In this project, phi-3.5-mini is finetuned to answer questions related to the medical and healthcare domain using following three major steps.
 
+1. **Downstream(Pretrain)**: The domain of the model is downstreamed to medical and healthcare
+2. **Q & A finetune**: Finetune to answer questions from medical sector
+3. **Out-of-scope negative finetuning**: To teach the model not to answer questions that are from different domains (Eg: general knowledge, code writing,...etc)
+---
+## Requirements
+Install the requirements using requiremens.txt
+```
+$ pip install -r requirements.txt
+```
+---
+## How to finetune
 
-# Pretrain attempt 2
+1. **Prepare the data for pretraining** by running the pretrain_data_prep.ipynb carefully
+2. **Pretrain** by running the pretrain.ipynb.
+3. **Evaluate pretrain** using pretrain_evaluation.ipynb.
+4. **Prepare the datasets for Q and A finetuning** by running the finetune_qna_data_prep.ipynb
+5. **Finetune for Q and A** using finetune_qna.ipynb
+6. **Evaluate Q and A** by running finetune_qna_evaluation
+7. **Prepare the data for out-of-scope negative finetune** by running finetune_oos_qna_data_prep.pynb
+8. **Finetune for out-of-scope negative samples** using finetune_oos_qna.ipynb
+9. **Evaluate out-of-scope negative sampling** using finetune_oos_qna_evaluation
+10. **Compare finetuned model with other models** with compare_models.ipynb
 
-Sun May 11 09:18:59 2025       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 570.133.07             Driver Version: 570.133.07     CUDA Version: 12.8     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA A100 80GB PCIe          Off |   00000001:00:00.0 Off |                    0 |
-| N/A   74C    P0            304W /  300W |   26640MiB /  81920MiB |     90%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-                                                                                         
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    0   N/A  N/A           13587      C   ...min/hasindu/myenv/bin/python3      26628MiB |
-+-----------------------------------------------------------------------------------------+
+## How to run the UI Q and A app
 
+1. Execute the following command in the terminal
+```
+$ streamlit run app.py
+```
 
-# Pretrain attempt 2
+2. Navigate to localhost:8501 in the browser
 
-Mon May 12 06:36:58 2025       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 570.133.07             Driver Version: 570.133.07     CUDA Version: 12.8     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA A100 80GB PCIe          Off |   00000001:00:00.0 Off |                    0 |
-| N/A   74C    P0            280W /  300W |   32196MiB /  81920MiB |    100%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-                                                                                         
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    0   N/A  N/A           25667      C   ...min/hasindu/myenv/bin/python3      32184MiB |
-+-----------------------------------------------------------------------------------------+
+---
+## Final model comparison
+![Final model comparison result](images/model_comparison.png)
 
-
-# Q n A fine tune attempt 1, 2
-Tue May 13 11:29:09 2025       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 570.133.07             Driver Version: 570.133.07     CUDA Version: 12.8     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA A100 80GB PCIe          Off |   00000001:00:00.0 Off |                    0 |
-| N/A   78C    P0            340W /  300W |   33480MiB /  81920MiB |     99%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-                                                                                         
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    0   N/A  N/A           35596      C   ...min/hasindu/myenv/bin/python3      33468MiB |
-+-----------------------------------------------------------------------------------------+
-
-
-# Q n A fine tune attempt 3
-
-Thu May 15 12:39:34 2025       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 570.133.07             Driver Version: 570.133.07     CUDA Version: 12.8     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA A100 80GB PCIe          Off |   00000001:00:00.0 Off |                    0 |
-| N/A   75C    P0            329W /  300W |   43282MiB /  81920MiB |    100%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-                                                                                         
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    0   N/A  N/A           51829      C   ...min/hasindu/myenv/bin/python3      43270MiB |
-+-----------------------------------------------------------------------------------------+
-
-# Q n A fine tune attempt 4
-
-Fri May 16 14:29:56 2025       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 570.133.07             Driver Version: 570.133.07     CUDA Version: 12.8     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA A100 80GB PCIe          Off |   00000001:00:00.0 Off |                    0 |
-| N/A   74C    P0            355W /  300W |   43322MiB /  81920MiB |    100%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-                                                                                         
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    0   N/A  N/A           61905      C   ...min/hasindu/myenv/bin/python3      43310MiB |
-+-----------------------------------------------------------------------------------------+
+---
+## Datasets used
+- PubMed article abstract dataset: for pretrain (https://pubmed.ncbi.nlm.nih.gov/download/)
+- Healthcare NLP: LLMs, Transformers, Datasets: for Q and A (https://www.kaggle.com/datasets/jpmiller/layoutlm)
+- Medical Conversation Corpus (100k+): for Q and A (https://www.kaggle.com/datasets/thedevastator/medical-conversation-corpus-100k)
+- TriviaQA-dataset: for out-of-scope negative finetuning (https://www.kaggle.com/datasets/andreajaunarena/triviaqa-dataset)
+- Stanford Question Answering Dataset: for out-of-scope negative finetuning (https://www.kaggle.com/datasets/stanfordu/stanford-question-answering-dataset)

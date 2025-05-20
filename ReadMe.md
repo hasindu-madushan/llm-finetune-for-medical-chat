@@ -32,6 +32,8 @@ $ pip install -r requirements.txt
 ```
 $ streamlit run app.py
 ```
+![App](images/app_screenshot_1.png)
+
 
 2. Navigate to localhost:8501 in the browser
 
